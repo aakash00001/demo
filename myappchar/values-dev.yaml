@@ -1,0 +1,25 @@
+# Dev environment specific values
+global:
+  environment: dev
+  namespace: dev-namespace
+
+replicaCount: 2
+nameSuffix: -dev
+
+# Override image configuration for dev if needed
+image:
+  repository: demoapp
+  tag: latest
+  pullPolicy: Never
+
+# Service configuration
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+  nodePort: 30010
+
+# Redis configuration
+redis:
+  configMap:
+    name: redis-config-dev

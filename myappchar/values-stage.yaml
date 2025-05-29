@@ -1,0 +1,25 @@
+# Stage environment specific values
+global:
+  environment: stage
+  namespace: stage-namespace
+
+replicaCount: 3
+nameSuffix: -stage
+
+# Override image configuration for stage if needed
+image:
+  repository: demoapp
+  tag: latest
+  pullPolicy: Never
+
+# Service configuration
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+  nodePort: 30008
+
+# Redis configuration
+redis:
+  configMap:
+    name: redis-config-stage
