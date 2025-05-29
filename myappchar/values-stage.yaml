@@ -3,7 +3,7 @@ global:
   environment: stage
   namespace: stage-namespace
 
-replicaCount: 3
+replicaCount: 4
 nameSuffix: -stage
 
 # Override image configuration for stage if needed
