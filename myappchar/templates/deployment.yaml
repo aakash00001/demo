@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapp-deployment{{ .Values.nameSuffix }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: demoapp
+    environment: {{ .Values.global.environment }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: demoapp
+      environment: {{ .Values.global.environment }}
+  template:
+    metadata:
+      labels:
+        app: demoapp
+        environment: {{ .Values.global.environment }}
+    spec:
+      containers:
+      - name: demoapp
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: SPRING_REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.redis.configMap.name }}
+              key: SPRING_REDIS_HOST
+        - name: SPRING_REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.redis.configMap.name }}
+              key: SPRING_REDIS_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoapp-service{{ .Values.nameSuffix }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    environment: {{ .Values.global.environment }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: demoapp
+    environment: {{ .Values.global.environment }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      nodePort: {{ .Values.service.nodePort }}
